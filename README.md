@@ -1,4 +1,4 @@
-# Install plugin for CakePHP
+# Install plugin for Spider Project
 
 ## Installation
 

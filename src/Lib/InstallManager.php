@@ -3,6 +3,7 @@ namespace Install\Lib;
 
 use Cake\Filesystem\File;
 use Cake\Datasource\ConnectionManager;
+use Cake\Core\Plugin;
 
 class InstallManager
 {
@@ -34,11 +35,13 @@ class InstallManager
                 $config[$key] = $value;
             }
         }
-        $result = copy(INSTALL . DS . 'config' . DS . 'database.php.default', INSTALL . DS . 'config' . DS . 'database.php');
+
+
+        $result = copy(Plugin::path('Install') . 'config' . DS . 'database.php.default', CONFIG . 'database.php');
         if (!$result) {
             return __d('spider', 'Could not copy database.php file.');
         }
-        $file = new File(INSTALL . DS . 'config' . DS . 'database.php', true);
+        $file = new File(CONFIG . 'database.php', true);
         $content = $file->read();
         foreach ($config as $configKey => $configValue) {
             $content = str_replace('{default_' . $configKey . '}', $configValue, $content);
@@ -46,20 +49,27 @@ class InstallManager
         if (!$file->write($content)) {
             return __d('spider', 'Could not write database.php file.');
         }
-        
-        try {            
+        $this->_changeDatasource();
+
+        try {
 //            ConnectionManager::config('default',$config);            
             $connection = ConnectionManager::get('default');
-            
-            
+
+
         } catch (MissingConnectionException $e) {
             return __d('spider', 'Could not connect to database: ') . $e->getMessage();
-        }        
+        }
         if (!$connection->connect()) {
             return __d('spider', 'Could not connect to database.');
         }
-        
+
         return true;
+    }
+
+
+    protected function _changeDatasource()
+    {
+        $result = copy(Plugin::path('Install') . 'config' . DS . 'app.default.php', CONFIG . 'app.php');
     }
 
     public function createCroogoFile()

@@ -11,6 +11,7 @@ use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use PluginManager\Lib\SpiderPlugin;
 use Migrations\Migrations;
+use Cake\Core\App;
 
 class InstallTable extends SpiderTable
 {
@@ -65,11 +66,11 @@ class InstallTable extends SpiderTable
     public function setupDatabase()
     {
         $plugins = Configure::read('Core.corePlugins');
-        
         $migrationsSucceed = true;
         foreach ($plugins as $plugin) {
             $plugin  = explode('/', $plugin);
             $plugin  = $plugin[0];
+            
             $migrationsSucceed = $this->runMigrations($plugin);
             if (!$migrationsSucceed) {
                 $this->log('Migrations failed for ' . $plugin, LOG_CRIT);
@@ -96,8 +97,9 @@ class InstallTable extends SpiderTable
 //        }
         
         $migrations = new Migrations();
-        $result = $migrations->migrate();
-        
+        Plugin::load('AclManager');
+        $result = $migrations->migrate(['plugin' => 'AclManager']);
+                
         return $result;
     }
 

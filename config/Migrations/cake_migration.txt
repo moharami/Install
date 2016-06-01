@@ -1,0 +1,1 @@
+cake bake migration CreateAclmanagerAcos name:string[255] title:string[255] description:text model:string[255] foreign_key:integer[11] created modified

@@ -73,7 +73,6 @@ class InstallController extends AppController
 
     public function data()
     {
-        
         $this->_check();
         $this->set('title_for_layout', __d('spider', 'Step 2: Build database'));
 
@@ -84,9 +83,8 @@ class InstallController extends AppController
         
 
         if (!empty($tables)) {
-            $this->Flash->warning(
-                __d('spider', 'Warning: Database "%s" is not empty.', $database),
-                'default', array('class' => 'error')
+            $this->Flash->error(
+                __("Warning: Database %s is not empty.", h($database))
             );
         }
 

@@ -4,7 +4,13 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    
+    <?= $this->Html->meta(
+        'favicon.ico',
+        'Install./img/logo/spider/spider.ico',
+        ['type' => 'icon']
+    ) ?>
+    
     <title>
         <?= $title_for_layout; ?> - <?= __d('spider', 'Spider'); ?>
     </title>
@@ -12,6 +18,7 @@
     <?= $this->Html->css('Install.bootstrap.min.css'); ?>
 
     <!-- Custom CSS -->
+    
     <?= $this->Html->css('Install.freelancer.css'); ?>
     <?= $this->Html->css('Install.custom.css'); ?>
 
@@ -21,21 +28,12 @@
 </head>
 
 <body id="page-top" class="index">
+<?= $this->element('Install.admin/header'); ?>
 
-<!-- Navigation -->
-<nav class="navbar navbar-default ">
-    <div class="container">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header pager-next">
-            <a class="navbar-brand"  id ='next' href="#page-top">Install Spider</a>
-        </div>
-        <!-- /.navbar-collapse -->
-    </div>
-    <!-- /.container-fluid -->
-</nav>
 
-<?= $this->Flash->render() ?>
-<div class="container clearfix">
+
+<div class="container">
+    <?= $this->Flash->render() ?>
     <?= $this->fetch('content') ?>
 </div>
 

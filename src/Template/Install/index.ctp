@@ -4,9 +4,6 @@ use Cake\Cache\Cache;
 
 $check = true;
 ?>
-
-
-<br/><br/><br/>
 <div class="install">
     <div class="panel panel-default">
         <div class="panel-heading">

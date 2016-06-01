@@ -2,6 +2,7 @@
 namespace Install\Lib;
 
 use Cake\Filesystem\File;
+use Cake\Filesystem\Folder;
 use Cake\Datasource\ConnectionManager;
 use Cake\Core\Plugin;
 
@@ -42,6 +43,7 @@ class InstallManager
             return __d('spider', 'Could not copy database.php file.');
         }
         $file = new File(CONFIG . 'database.php', true);
+        $file = new Folder(CONFIG . 'database.php', true);
         $content = $file->read();
         foreach ($config as $configKey => $configValue) {
             $content = str_replace('{default_' . $configKey . '}', $configValue, $content);

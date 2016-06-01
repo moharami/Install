@@ -12,6 +12,7 @@ use Cake\Core\Plugin;
 use PluginManager\Lib\SpiderPlugin;
 use Migrations\Migrations;
 use Cake\Core\App;
+use Install\Lib\DataMigration;
 
 class InstallTable extends SpiderTable
 {
@@ -20,8 +21,8 @@ class InstallTable extends SpiderTable
      * @var C
      */
     protected $_SpiderPlugin = null;
-  
-    /** 
+
+    /**
      * Initialize method
      *
      * @param array $config The configuration for the Table.
@@ -29,7 +30,7 @@ class InstallTable extends SpiderTable
      */
     public function initialize(array $config)
     {
-        parent::initialize($config);        
+        parent::initialize($config);
         $this->table('');
     }
 
@@ -66,22 +67,28 @@ class InstallTable extends SpiderTable
     public function setupDatabase()
     {
         $plugins = Configure::read('Core.corePlugins');
+        
         $migrationsSucceed = true;
         foreach ($plugins as $plugin) {
-            $plugin  = explode('/', $plugin);
-            $plugin  = $plugin[0];
-            
+            $plugin = explode('/', $plugin);
+            $plugin = $plugin[1];
             $migrationsSucceed = $this->runMigrations($plugin);
             if (!$migrationsSucceed) {
                 $this->log('Migrations failed for ' . $plugin, LOG_CRIT);
                 break;
+            } else {
+                $DataMigration = new DataMigration();
+                $plugin_path = Plugin::path($plugin);
+                
+                $path = $plugin_path . 'config' . DS . 'Data';
+                debug($path);
+                if (is_dir($path)) {                    
+                    $DataMigration->load($path);    
+                }
             }
         }
-//        if ($migrationsSucceed) {
-//            $DataMigration = new DataMigration();
-//            $path = App::pluginPath('Install') . DS . 'config' . DS . 'Data' . DS;
-//            $DataMigration->load($path);
-//        }
+        debug('d');
+        die();
         return $migrationsSucceed;
     }
 
@@ -95,11 +102,11 @@ class InstallTable extends SpiderTable
 //        if (!$result) {
 //            $this->log($SpiderPlugin->migrationErrors);
 //        }
-        
+
         $migrations = new Migrations();
         Plugin::load('AclManager');
         $result = $migrations->migrate(['plugin' => 'AclManager']);
-                
+
         return $result;
     }
 
@@ -116,5 +123,5 @@ class InstallTable extends SpiderTable
         unset($this->_SpiderPlugin);
         $this->_SpiderPlugin = $spiderPlugin;
     }
-    
+
 }
